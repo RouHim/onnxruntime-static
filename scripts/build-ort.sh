@@ -112,13 +112,16 @@ collect_licenses() {
             cp "$src/$file" "$out/$file"
         fi
     done
-    printf '%s\n' "$version" > "$out/VERSION"
+    printf 'version=%s\ncommit=%s\n' "$version" "$(git -C "$src" rev-parse HEAD)" > "$out/VERSION"
 }
 
 echo "==> cloning ONNX Runtime v$version ($target)"
-git clone --quiet --depth 1 --branch "v$version" \
-    --recurse-submodules --shallow-submodules \
-    https://github.com/microsoft/onnxruntime.git "$src"
+git_url=${ORT_GIT_URL:-https://github.com/microsoft/onnxruntime.git}
+git clone --quiet --depth 1 --branch "v$version" "$git_url" "$src"
+
+# Only the ONNX submodule is needed for a CPU build. emsdk (WebAssembly) and
+# libprotobuf-mutator (fuzzing) stay uninitialized.
+git -C "$src" submodule update --init --depth 1 cmake/external/onnx
 
 echo "==> configuring"
 set -- -S "$src/cmake" -B "$build" -G "Unix Makefiles" \

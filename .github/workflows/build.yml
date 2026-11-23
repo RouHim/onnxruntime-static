@@ -102,10 +102,12 @@ jobs:
       - name: Build and smoke
         env:
           ORT_VERSION: ${{ needs.resolve.outputs.version }}
+          ORT_GIT_URL: https://gitcode.com/GitHub_Trending/on/onnxruntime.git
         run: |
           docker run --rm \
             -v "$PWD:/src" -w /src \
             -e ORT_VERSION \
+            -e ORT_GIT_URL \
             ort-build sh scripts/ci/build-in-container.sh "${{ matrix.target }}"
       - name: Package
         run: |

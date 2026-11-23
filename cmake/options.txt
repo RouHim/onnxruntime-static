@@ -1,4 +1,5 @@
 # CPU-only ONNX Runtime build. One option per line.
+-Donnxruntime_DEV_MODE=OFF
 -Donnxruntime_BUILD_SHARED_LIB=ON
 -Donnxruntime_BUILD_UNIT_TESTS=OFF
 -Donnxruntime_RUN_ONNX_TESTS=OFF
