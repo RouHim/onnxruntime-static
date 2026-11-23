@@ -16,19 +16,19 @@
     {
       "matchPackageNames": ["onnxruntime"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "matchManagers": ["github-actions"],
       "pinDigests": true,
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "matchManagers": ["dockerfile"],
       "pinDigests": true,
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     }
   ]
 }
