@@ -14,11 +14,9 @@ out=${2:-"$root/out/$target"}
 
 case "$target" in
     x86_64-unknown-linux-gnu)
-        cxx=${CXX:-g++}
         link_flags="-lpthread -ldl -lm"
         ;;
     x86_64-unknown-linux-musl|aarch64-unknown-linux-musl)
-        cxx=${CXX:-g++}
         link_flags="-static -static-libstdc++ -static-libgcc -lpthread -lm"
         ;;
     *)
@@ -27,13 +25,10 @@ case "$target" in
         ;;
 esac
 
+mkdir -p "$root/build"
 bin="$root/build/smoke-$target"
 # shellcheck disable=SC2086
-"$cxx" -std=c++17 -O2 \
-    -I "$out/include" -I "$out/include/onnxruntime" -I "$out/include/core/session" \
-    "$root/smoke/smoke.cc" \
-    -L "$out/lib" -lonnxruntime $link_flags \
-    -o "$bin"
+sh "$root/scripts/link-smoke.sh" "${CXX:-g++}" "$out" "$bin" $link_flags
 
 if [ "$target" != x86_64-unknown-linux-gnu ]; then
     file "$bin" | grep -q 'statically linked' || {

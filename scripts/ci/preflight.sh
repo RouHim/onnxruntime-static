@@ -33,15 +33,10 @@ mkdir -p "$out"
 tar --zstd -xf "$archive" -C "$out"
 
 prefix=$(compiler_prefix "$target")
-cxx="${prefix}-g++"
 bin="$root/build/preflight-$target"
-# shellcheck disable=SC2086
-"$cxx" -std=c++17 -O2 \
-    -I "$out/include" -I "$out/include/onnxruntime" -I "$out/include/core/session" \
-    "$root/smoke/smoke.cc" \
-    -L "$out/lib" -lonnxruntime \
-    -static -static-libstdc++ -static-libgcc -lpthread -lm \
-    -o "$bin"
+mkdir -p "$root/build"
+sh "$root/scripts/link-smoke.sh" "${prefix}-g++" "$out" "$bin" \
+    -static -static-libstdc++ -static-libgcc -lpthread -lm
 
 file "$bin" | grep -q 'statically linked' || {
     echo "preflight binary is not statically linked:" >&2

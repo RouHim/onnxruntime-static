@@ -45,9 +45,11 @@ VERSION
 version=1.32.0
 target=x86_64-unknown-linux-musl
 asset=onnxruntime-${version}-${target}-static.tar.zst
-curl -fL -o "$asset" \
-  "https://github.com/RouHim/onnxruntime-static/releases/download/v${version}/${asset}"
+base_url="https://github.com/RouHim/onnxruntime-static/releases/download/v${version}"
+curl -fL -o "$asset" "$base_url/$asset"
+curl -fL -o SHA256SUMS "$base_url/SHA256SUMS"
 sha256sum -c SHA256SUMS --ignore-missing
+mkdir -p vendor/ort
 tar --zstd -xf "$asset" -C vendor/ort
 export ORT_LIB_PATH="$PWD/vendor/ort/lib"
 ```
@@ -60,7 +62,7 @@ because each asset has its own digest:
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)ort-pins\\.env$"],
+      "managerFilePatterns": ["/(^|/)ort-pins\\.env$/"],
       "matchStrings": [
         "ORT_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)\\nORT_SHA_X86_64_MUSL=(?<currentDigest>[a-f0-9]{64})"
       ],
