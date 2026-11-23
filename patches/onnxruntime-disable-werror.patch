@@ -4,7 +4,7 @@ positive); a consumer build should not fail on it. Disable the policy instead
 of patching individual source files.
 --- a/cmake/CMakeLists.txt
 +++ b/cmake/CMakeLists.txt
-@@ -1260,7 +1260,7 @@
+@@ -1261,6 +1261,6 @@
      endif()
  
 -    set_target_properties(${target_name} PROPERTIES COMPILE_WARNING_AS_ERROR ON)

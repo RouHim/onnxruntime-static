@@ -4,6 +4,7 @@ set -eu
 
 here=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 root=$(dirname "$here")
+. "$root/scripts/lib.sh"
 
 [ $# -ge 1 ] || {
     echo "usage: scripts/smoke.sh <target> [artifact-dir]" >&2
@@ -17,7 +18,7 @@ case "$target" in
         link_flags="-lpthread -ldl -lm"
         ;;
     x86_64-unknown-linux-musl|aarch64-unknown-linux-musl)
-        link_flags="-static -static-libstdc++ -static-libgcc -lpthread -lm"
+        link_flags=$(musl_link_flags)
         ;;
     *)
         echo "unsupported target: $target" >&2

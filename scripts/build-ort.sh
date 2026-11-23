@@ -174,15 +174,24 @@ while IFS= read -r option; do
     set -- "$@" "$option"
 done < "$root/cmake/options.txt"
 
-# The messense/rust-musl-cross images export TARGET_CXX; use their GCC 12.4
-# musl toolchain so the artifact links with turbo-pix's release builder.
-if [ -n "${TARGET_CXX:-}" ]; then
-    set -- "$@" \
-        -Donnxruntime_CROSS_COMPILING=ON \
-        -DCMAKE_TOOLCHAIN_FILE="$root/cmake/musl-cross.toolchain.cmake"
-else
-    set -- "$@" -Donnxruntime_CROSS_COMPILING=OFF
-fi
+# The messense/rust-musl-cross images are the only supported musl build
+# environments: their GCC 12.4 matches turbo-pix's release link stage. A musl
+# target without TARGET_CXX must fail instead of silently producing a glibc
+# build under a musl name.
+case "$target" in
+    *-musl)
+        if [ -z "${TARGET_CXX:-}" ]; then
+            echo "error: $target requires the musl-cross toolchain (images/musl-cross-*.Dockerfile)" >&2
+            exit 1
+        fi
+        set -- "$@" \
+            -Donnxruntime_CROSS_COMPILING=ON \
+            -DCMAKE_TOOLCHAIN_FILE="$root/cmake/musl-cross.toolchain.cmake"
+        ;;
+    x86_64-unknown-linux-gnu)
+        set -- "$@" -Donnxruntime_CROSS_COMPILING=OFF
+        ;;
+esac
 cmake "$@"
 
 if [ "$target" != x86_64-unknown-linux-gnu ]; then

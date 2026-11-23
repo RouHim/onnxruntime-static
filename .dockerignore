@@ -2,4 +2,6 @@
 build
 dist
 out
+source
+source-build
 vendor

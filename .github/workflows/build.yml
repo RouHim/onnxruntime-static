@@ -91,7 +91,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: source-build/ort-source.tar.zst
-          key: ort-source-${{ needs.resolve.outputs.version }}
+          key: ort-source-${{ needs.resolve.outputs.version }}-${{ hashFiles('scripts/ci/fetch-source.sh') }}
       - name: Fetch source
         if: steps.cache.outputs.cache-hit != 'true'
         env:
@@ -109,6 +109,7 @@ jobs:
           if-no-files-found: error
 
   build:
+    name: build (${{ matrix.target }})
     needs: [resolve, source]
     strategy:
       fail-fast: false
@@ -160,6 +161,7 @@ jobs:
           if-no-files-found: error
 
   preflight:
+    name: preflight (${{ matrix.target }})
     needs: [resolve, build]
     strategy:
       fail-fast: false

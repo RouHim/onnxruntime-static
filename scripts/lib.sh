@@ -27,3 +27,22 @@ compiler_prefix() {
         *) return 1 ;;
     esac
 }
+
+# Resolve a version from an explicit value or ort.env below the given root.
+resolve_version() {
+    root=$1
+    explicit=${2:-}
+    if [ -n "$explicit" ]; then
+        version=$(strip_v "$explicit")
+    else
+        # shellcheck disable=SC1091
+        . "$root/ort.env"
+        version=$ORT_VERSION
+    fi
+    validate_version "$version" || return 1
+    printf '%s\n' "$version"
+}
+
+musl_link_flags() {
+    printf '%s\n' "-static -static-libstdc++ -static-libgcc -lpthread -lm"
+}

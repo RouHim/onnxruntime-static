@@ -13,9 +13,9 @@ root=$(CDPATH='' cd -- "$here/../.." && pwd)
 target=$1
 
 if [ -n "${ORT_VERSION:-}" ]; then
-    version=$(strip_v "$ORT_VERSION")
+    version=$(resolve_version "$root" "$ORT_VERSION")
 else
-    version=$(sh "$root/scripts/resolve-version.sh")
+    version=$(resolve_version "$root")
 fi
 
 out="$root/out/$target"

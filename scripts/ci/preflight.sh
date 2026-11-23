@@ -16,9 +16,9 @@ target=$1
 
 version_input=${ORT_VERSION:-}
 if [ -n "$version_input" ]; then
-    version=$(strip_v "$version_input")
+    version=$(resolve_version "$root" "$version_input")
 else
-    version=$(sh "$root/scripts/resolve-version.sh")
+    version=$(resolve_version "$root")
 fi
 asset=$(asset_name "$version" "$target")
 archive="$root/dist/$asset"
@@ -36,8 +36,9 @@ prefix=$(compiler_prefix "$target")
 cxx=${CXX:-"${TARGET_CXX:-${prefix}-g++}"}
 bin="$root/build/preflight-$target"
 mkdir -p "$root/build"
-sh "$root/scripts/link-smoke.sh" "$cxx" "$out" "$bin" \
-    -static -static-libstdc++ -static-libgcc -lpthread -lm
+link_flags=$(musl_link_flags)
+# shellcheck disable=SC2086
+sh "$root/scripts/link-smoke.sh" "$cxx" "$out" "$bin" $link_flags
 
 file "$bin" | grep -q 'statically linked' || {
     echo "preflight binary is not statically linked:" >&2

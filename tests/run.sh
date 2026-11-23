@@ -54,6 +54,16 @@ assert_eq "aarch64-unknown-linux-musl" "$(compiler_prefix aarch64-unknown-linux-
     "compiler_prefix maps aarch64 musl"
 assert_fails "compiler_prefix rejects the gnu target" compiler_prefix x86_64-unknown-linux-gnu
 
+assert_eq "-static -static-libstdc++ -static-libgcc -lpthread -lm" \
+    "$(musl_link_flags)" "musl_link_flags is the static musl set"
+
+assert_eq "$(sed -n 's/^ORT_VERSION=//p' "$root/ort.env")" \
+    "$(resolve_version "$root")" "resolve_version reads ort.env"
+assert_eq "1.30.0" "$(resolve_version "$root" v1.30.0)" \
+    "resolve_version strips an explicit v prefix"
+assert_fails "resolve_version rejects an invalid explicit version" \
+    resolve_version "$root" latest
+
 pinned=$(sh "$root/scripts/resolve-version.sh")
 assert_ok "pinned version is valid" validate_version "$pinned"
 assert_eq "$(sed -n 's/^ORT_VERSION=//p' "$root/ort.env")" "$pinned" \
