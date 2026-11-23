@@ -7,14 +7,14 @@
       "customType": "regex",
       "managerFilePatterns": ["/(^|/)ort\\.env$/"],
       "matchStrings": ["ORT_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
-      "depNameTemplate": "microsoft/onnxruntime",
-      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "onnxruntime",
+      "datasourceTemplate": "pypi",
       "versioningTemplate": "semver-coerced"
     }
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["microsoft/onnxruntime"],
+      "matchPackageNames": ["onnxruntime"],
       "automerge": true,
       "automergeType": "branch"
     },

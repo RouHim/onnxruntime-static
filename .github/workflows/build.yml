@@ -6,6 +6,7 @@ on:
       - "ort.env"
       - "cmake/**"
       - "patches/**"
+      - "renovate.json"
       - "scripts/**"
       - "smoke/**"
       - "images/**"
