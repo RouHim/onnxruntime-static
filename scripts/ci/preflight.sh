@@ -1,6 +1,6 @@
 #!/bin/sh
-# Link the smoke test with the GCC 12.4 musl toolchain used by the consumer
-# (turbo-pix). A missing libstdc++ symbol fails here instead of in the
+# Link the smoke test with the Alpine GCC 14.2 musl toolchain used by the
+# consumer (turbo-pix). A missing libstdc++ symbol fails here instead of in the
 # consumer's build.
 set -eu
 
@@ -32,8 +32,7 @@ rm -rf "$out"
 mkdir -p "$out"
 tar --zstd -xf "$archive" -C "$out"
 
-prefix=$(compiler_prefix "$target")
-cxx=${CXX:-"${TARGET_CXX:-${prefix}-g++}"}
+cxx=${CXX:-${TARGET_CXX:-g++}}
 bin="$root/build/preflight-$target"
 mkdir -p "$root/build"
 link_flags=$(musl_link_flags)

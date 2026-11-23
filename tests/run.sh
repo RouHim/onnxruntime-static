@@ -48,12 +48,6 @@ assert_eq "onnxruntime-1.32.0-x86_64-unknown-linux-musl-static.tar.zst" \
     "$(asset_name 1.32.0 x86_64-unknown-linux-musl)" \
     "asset_name embeds the version and target"
 
-assert_eq "x86_64-unknown-linux-musl" "$(compiler_prefix x86_64-unknown-linux-musl)" \
-    "compiler_prefix maps x86_64 musl"
-assert_eq "aarch64-unknown-linux-musl" "$(compiler_prefix aarch64-unknown-linux-musl)" \
-    "compiler_prefix maps aarch64 musl"
-assert_fails "compiler_prefix rejects the gnu target" compiler_prefix x86_64-unknown-linux-gnu
-
 assert_eq "-static -static-libstdc++ -static-libgcc -lpthread -lm" \
     "$(musl_link_flags)" "musl_link_flags is the static musl set"
 
