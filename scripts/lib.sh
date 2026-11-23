@@ -18,11 +18,12 @@ asset_name() {
 }
 
 # GCC prefix used by the messense/rust-musl-cross images for the link
-# preflight. The gnu target links with the host compiler, so it has none.
+# preflight. The images ship target-prefixed tools such as
+# `aarch64-unknown-linux-musl-g++`. The gnu target links with the host
+# compiler, so it has none.
 compiler_prefix() {
     case "$1" in
-        x86_64-unknown-linux-musl) printf '%s\n' x86_64-linux-musl ;;
-        aarch64-unknown-linux-musl) printf '%s\n' aarch64-linux-musl ;;
+        x86_64-unknown-linux-musl|aarch64-unknown-linux-musl) printf '%s\n' "$1" ;;
         *) return 1 ;;
     esac
 }

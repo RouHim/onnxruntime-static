@@ -14,7 +14,12 @@ root=$(CDPATH='' cd -- "$here/../.." && pwd)
 }
 target=$1
 
-version=$(sh "$root/scripts/resolve-version.sh")
+version_input=${ORT_VERSION:-}
+if [ -n "$version_input" ]; then
+    version=$(strip_v "$version_input")
+else
+    version=$(sh "$root/scripts/resolve-version.sh")
+fi
 asset=$(asset_name "$version" "$target")
 archive="$root/dist/$asset"
 if [ ! -f "$archive" ]; then

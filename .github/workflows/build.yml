@@ -48,11 +48,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: ShellCheck
         run: >-
-          docker run --rm -v "$PWD:/repo" -w /repo koalaman/shellcheck:stable
+          docker run --rm -v "$PWD:/repo" -w /repo
+          koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
           scripts/*.sh scripts/ci/*.sh tests/*.sh
       - name: actionlint
         run: >-
-          docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:latest
+          docker run --rm -v "$PWD:/repo" -w /repo
+          rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
           -color
       - name: Shell tests
         run: sh tests/run.sh
@@ -140,9 +142,11 @@ jobs:
           name: ${{ matrix.target }}
           path: dist
       - name: Link with the consumer toolchain
+        env:
+          ORT_VERSION: ${{ needs.resolve.outputs.version }}
         run: |
           docker build -f "${{ matrix.dockerfile }}" -t ort-preflight .
-          docker run --rm -v "$PWD:/src" -w /src ort-preflight \
+          docker run --rm -v "$PWD:/src" -w /src -e ORT_VERSION ort-preflight \
             sh scripts/ci/preflight.sh "${{ matrix.target }}"
 
   publish:
@@ -175,11 +179,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.resolve.outputs.version }}
         run: |
-          if gh release view "v$VERSION" >/dev/null 2>&1; then
+          if gh release view "v$VERSION" --json isDraft --jq '.isDraft' 2>/dev/null | grep -q true; then
+            echo "deleting incomplete draft release v$VERSION"
+            gh release delete "v$VERSION" --yes
+          elif gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "release v$VERSION already exists; nothing to publish"
             exit 0
           fi
-          gh release create "v$VERSION" \
-            dist/*.tar.zst dist/SHA256SUMS \
+          gh release create "v$VERSION" --draft \
             --title "ONNX Runtime $VERSION static builds" \
             --notes "Static CPU builds of ONNX Runtime $VERSION for x86_64 GNU, x86_64 musl, and aarch64 musl. Assets are SHA-256 pinned in SHA256SUMS."
+          gh release upload "v$VERSION" dist/*.tar.zst dist/SHA256SUMS
+          gh release edit "v$VERSION" --draft=false

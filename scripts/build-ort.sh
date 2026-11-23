@@ -108,16 +108,33 @@ collect_headers() {
 
 collect_licenses() {
     for file in LICENSE ThirdPartyNotices.txt; do
-        if [ -f "$src/$file" ]; then
-            cp "$src/$file" "$out/$file"
+        if [ ! -f "$src/$file" ]; then
+            echo "error: ONNX Runtime source is missing $file" >&2
+            exit 1
         fi
+        cp "$src/$file" "$out/$file"
     done
     printf 'version=%s\ncommit=%s\n' "$version" "$(git -C "$src" rev-parse HEAD)" > "$out/VERSION"
 }
 
+clone_ort() {
+    attempt=1
+    while [ "$attempt" -le 3 ]; do
+        if git clone --quiet --depth 1 --branch "v$version" "$git_url" "$src"; then
+            return 0
+        fi
+        rm -rf "$src"
+        attempt=$((attempt + 1))
+        if [ "$attempt" -le 3 ]; then
+            sleep 5
+        fi
+    done
+    return 1
+}
+
 echo "==> cloning ONNX Runtime v$version ($target)"
 git_url=${ORT_GIT_URL:-https://github.com/microsoft/onnxruntime.git}
-git clone --quiet --depth 1 --branch "v$version" "$git_url" "$src"
+clone_ort
 
 # Only the ONNX submodule is needed for a CPU build. emsdk (WebAssembly) and
 # libprotobuf-mutator (fuzzing) stay uninitialized.

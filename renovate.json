@@ -5,7 +5,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["(^|/)ort\\.env$"],
+      "managerFilePatterns": ["/(^|/)ort\\.env$/"],
       "matchStrings": ["ORT_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
       "depNameTemplate": "microsoft/onnxruntime",
       "datasourceTemplate": "github-releases",
