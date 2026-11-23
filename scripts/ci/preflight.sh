@@ -33,9 +33,10 @@ mkdir -p "$out"
 tar --zstd -xf "$archive" -C "$out"
 
 prefix=$(compiler_prefix "$target")
+cxx=${CXX:-"${TARGET_CXX:-${prefix}-g++}"}
 bin="$root/build/preflight-$target"
 mkdir -p "$root/build"
-sh "$root/scripts/link-smoke.sh" "${prefix}-g++" "$out" "$bin" \
+sh "$root/scripts/link-smoke.sh" "$cxx" "$out" "$bin" \
     -static -static-libstdc++ -static-libgcc -lpthread -lm
 
 file "$bin" | grep -q 'statically linked' || {
@@ -44,9 +45,7 @@ file "$bin" | grep -q 'statically linked' || {
     exit 1
 }
 
-# The x86_64 toolchain runs on this host, so execute the binary too.
-if [ "$target" = x86_64-unknown-linux-musl ]; then
-    "$bin" "$root/smoke/tiny_add.onnx"
-fi
+# The preflight runner matches the target architecture, so execute the binary.
+"$bin" "$root/smoke/tiny_add.onnx"
 
 echo "preflight link ok ($target)"

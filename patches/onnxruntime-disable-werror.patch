@@ -1,0 +1,14 @@
+ONNX Runtime enables warnings-as-errors for its own targets. GCC 12.4 trips
+-Werror=array-bounds in group_query_attention_fusion.cc (a known false
+positive); a consumer build should not fail on it. Disable the policy instead
+of patching individual source files.
+--- a/cmake/CMakeLists.txt
++++ b/cmake/CMakeLists.txt
+@@ -1260,7 +1260,7 @@
+     endif()
+ 
+-    set_target_properties(${target_name} PROPERTIES COMPILE_WARNING_AS_ERROR ON)
++    set_target_properties(${target_name} PROPERTIES COMPILE_WARNING_AS_ERROR OFF)
+     if (onnxruntime_USE_CUDA)
+       # Suppress a "conversion_function_not_usable" warning in gsl/span
+       target_compile_options(${target_name} PRIVATE "$<$<COMPILE_LANGUAGE:CUDA>:SHELL:-Xcudafe \"--diag_suppress=conversion_function_not_usable\">")

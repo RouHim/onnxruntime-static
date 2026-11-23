@@ -27,8 +27,9 @@ esac
 
 mkdir -p "$root/build"
 bin="$root/build/smoke-$target"
+cxx=${CXX:-${TARGET_CXX:-g++}}
 # shellcheck disable=SC2086
-sh "$root/scripts/link-smoke.sh" "${CXX:-g++}" "$out" "$bin" $link_flags
+sh "$root/scripts/link-smoke.sh" "$cxx" "$out" "$bin" $link_flags
 
 if [ "$target" != x86_64-unknown-linux-gnu ]; then
     file "$bin" | grep -q 'statically linked' || {
