@@ -54,17 +54,24 @@ tar --zstd -xf "$asset" -C vendor/ort
 export ORT_LIB_PATH="$PWD/vendor/ort/lib"
 ```
 
-Renovate can track the release and the asset digest. One manager per target,
-because each asset has its own digest:
+Renovate can track the release and the asset digest. Use one pin file per
+target (each asset has its own digest), pinning the **release tag** as
+`currentValue` — the datasource looks up `/releases/tags/<currentValue>`:
+
+```sh
+# scripts/ort/x86_64-unknown-linux-musl.env
+ORT_TAG=v1.32.0
+ORT_SHA=8fa66a3e9e70f702baad7741968cb917e88f14f914c4247040ff2d4ba63c9c02
+```
 
 ```json
 {
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/(^|/)ort-pins\\.env$/"],
+      "managerFilePatterns": ["/(^|/)scripts/ort/x86_64-unknown-linux-musl\\.env$/"],
       "matchStrings": [
-        "ORT_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)\\nORT_SHA_X86_64_MUSL=(?<currentDigest>[a-f0-9]{64})"
+        "ORT_TAG=(?<currentValue>v\\d+\\.\\d+\\.\\d+)\\nORT_SHA=(?<currentDigest>[a-f0-9]{64})"
       ],
       "depNameTemplate": "RouHim/onnxruntime-static",
       "datasourceTemplate": "github-release-attachments",
@@ -73,6 +80,8 @@ because each asset has its own digest:
   ]
 }
 ```
+
+Repeat the manager for the other target files.
 
 Asset filenames embed the version on purpose: Renovate maps a known digest to a
 filename in `SHA256SUMS`, then replaces the old version with the new one to find
