@@ -1,0 +1,13 @@
+FlatBuffers' locale-independent float parsing calls strtoull_l(), which musl
+does not provide. The glibc-only branch must not be selected on musl.
+--- a/_deps/flatbuffers-src/include/flatbuffers/base.h
++++ b/_deps/flatbuffers-src/include/flatbuffers/base.h
+@@ -270,7 +270,7 @@ namespace flatbuffers {
+   // strtoull_l}.
+   #if (defined(_MSC_VER) && _MSC_VER >= 1800) || \
+       (defined(__ANDROID_API__) && __ANDROID_API__>= 21) || \
+-      (defined(_XOPEN_VERSION) && (_XOPEN_VERSION >= 700)) && \
++      (defined(GLIBC) && defined(_XOPEN_VERSION) && (_XOPEN_VERSION >= 700)) && \
+         (!defined(__Fuchsia__) && !defined(__ANDROID_API__))
+     #define FLATBUFFERS_LOCALE_INDEPENDENT 1
+   #else
