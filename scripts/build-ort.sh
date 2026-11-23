@@ -147,7 +147,7 @@ if [ -n "${ORT_SOURCE_DIR:-}" ]; then
     src=$ORT_SOURCE_DIR
 else
     src="$work/src"
-    git_url=${ORT_GIT_URL:-https://gitcode.com/GitHub_Trending/on/onnxruntime.git}
+    git_url=${ORT_GIT_URL:-https://github.com/microsoft/onnxruntime.git}
     clone_ort
 fi
 
