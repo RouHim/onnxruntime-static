@@ -87,6 +87,10 @@ turbo-pix uses for its release binary (`messense/rust-musl-cross`). Alpine
 preflight gate caught exactly that. If turbo-pix moves its release build to
 Alpine, switch the `musl-cross-*` images back to Alpine.
 
+Two patches are applied during the build: the FlatBuffers musl locale fix and
+disabling ONNX Runtime's warnings-as-errors (GCC 12.4 trips a false-positive
+`-Werror=array-bounds`). Both live in `patches/`.
+
 ## Automation
 
 The build script clones ONNX Runtime from `ORT_GIT_URL`, defaulting to the
