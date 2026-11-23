@@ -17,17 +17,6 @@ asset_name() {
     printf 'onnxruntime-%s-%s-static.tar.zst\n' "$1" "$2"
 }
 
-# GCC prefix used by the messense/rust-musl-cross images for the link
-# preflight. The images ship target-prefixed tools such as
-# `aarch64-unknown-linux-musl-g++`. The gnu target links with the host
-# compiler, so it has none.
-compiler_prefix() {
-    case "$1" in
-        x86_64-unknown-linux-musl|aarch64-unknown-linux-musl) printf '%s\n' "$1" ;;
-        *) return 1 ;;
-    esac
-}
-
 # Resolve a version from an explicit value or ort.env below the given root.
 resolve_version() {
     root=$1

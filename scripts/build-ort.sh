@@ -147,7 +147,7 @@ if [ -n "${ORT_SOURCE_DIR:-}" ]; then
     src=$ORT_SOURCE_DIR
 else
     src="$work/src"
-    git_url=${ORT_GIT_URL:-https://github.com/microsoft/onnxruntime.git}
+    git_url=${ORT_GIT_URL:-https://gitcode.com/GitHub_Trending/on/onnxruntime.git}
     clone_ort
 fi
 
@@ -174,19 +174,17 @@ while IFS= read -r option; do
     set -- "$@" "$option"
 done < "$root/cmake/options.txt"
 
-# The messense/rust-musl-cross images are the only supported musl build
-# environments: their GCC 12.4 matches turbo-pix's release link stage. A musl
-# target without TARGET_CXX must fail instead of silently producing a glibc
-# build under a musl name.
+# The Alpine musl image is the supported musl build environment: its GCC 14.2
+# matches turbo-pix's Alpine release/container link stage. A musl target
+# without TARGET_CXX must fail instead of silently producing a glibc build
+# under a musl name.
 case "$target" in
     *-musl)
         if [ -z "${TARGET_CXX:-}" ]; then
-            echo "error: $target requires the musl-cross toolchain (images/musl-cross-*.Dockerfile)" >&2
+            echo "error: $target requires the Alpine musl toolchain (images/alpine.Dockerfile)" >&2
             exit 1
         fi
-        set -- "$@" \
-            -Donnxruntime_CROSS_COMPILING=ON \
-            -DCMAKE_TOOLCHAIN_FILE="$root/cmake/musl-cross.toolchain.cmake"
+        set -- "$@" -Donnxruntime_CROSS_COMPILING=OFF
         ;;
     x86_64-unknown-linux-gnu)
         set -- "$@" -Donnxruntime_CROSS_COMPILING=OFF
