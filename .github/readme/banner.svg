@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="120" viewBox="0 0 600 120" role="img" aria-label="onnxruntime-static">
+  <rect width="600" height="120" rx="14" fill="#141d2e"/>
+  <rect x="0.75" y="0.75" width="598.5" height="118.5" rx="13.25" fill="none" stroke="#2b3a52" stroke-width="1.5"/>
+  <g transform="translate(55 0)">
+  <path d="M 66.00 24.00 L 97.18 42.00 L 97.18 78.00 L 66.00 96.00 L 34.82 78.00 L 34.82 42.00 Z" fill="#1a2438" stroke="#46587a" stroke-width="2"/>
+    <polygon points="66.00 60.00 54.20 33.51 73.99 32.12 66.00 51.50" fill="#38bdf8" stroke="#141d2e" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="66.00 60.00 83.05 36.54 94.14 52.98 73.36 55.75" fill="#cbd5e1" stroke="#141d2e" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="66.00 60.00 94.84 63.03 86.15 80.86 73.36 64.25" fill="#38bdf8" stroke="#141d2e" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="66.00 60.00 77.80 86.49 58.01 87.88 66.00 68.50" fill="#cbd5e1" stroke="#141d2e" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="66.00 60.00 48.95 83.46 37.86 67.02 58.64 64.25" fill="#38bdf8" stroke="#141d2e" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="66.00 60.00 37.16 56.97 45.85 39.14 58.64 55.75" fill="#cbd5e1" stroke="#141d2e" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="66" cy="60" r="3.2" fill="#141d2e"/>
+  <text x="122" y="70" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="31" font-weight="600" fill="#f8fafc" letter-spacing="-0.6">onnxruntime<tspan fill="#38bdf8">-static</tspan></text>
+  </g>
+</svg>
